@@ -9,7 +9,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
  * user especially in large applications. This ensures that as you evolve your security requirements (update Spring
  * Security, leverage new Spring Security modules, or even swap out security implementations) you can do so easily.
  *
- * 
+ *
  *
  */
 public class CalendarUser implements Serializable {
@@ -18,6 +18,38 @@ public class CalendarUser implements Serializable {
     private String lastName;
     private String email;
     private String password;
+
+    private String date;
+    private String city;
+    private String district;
+    private String scene;
+    private String cell;
+    private String terminal;
+    /**
+     * parse date condition to dates
+     * @return
+     */
+    public String[] getDates(){
+    	String[] dates = new String[2];
+		if (this.date != null && !"".equals(this.date)) {
+			try {
+				String[] split = this.date.split(" - ");
+
+				SimpleDateFormat parse = new SimpleDateFormat("yy-MM-dd HH");
+				SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHH");
+
+				String startDate = format.format(parse.parse(split[0]));
+				String endDate = format.format(parse.parse(split[1]));
+
+				dates[0] = startDate;
+				dates[1] = endDate;
+			} catch (ParseException e) {
+				System.out.println("failed to deal with date condition:" + this.date +","+ e.getMessage());
+			}
+		}
+		return dates;
+    }
+
 
     /**
      * Gets the email address for this user. When authenticating against this data directly, this is also used as the
