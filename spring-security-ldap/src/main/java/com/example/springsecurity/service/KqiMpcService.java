@@ -8,5 +8,11 @@ import com.ericsson.volteapp.entity.KqiMpcQuery;
 public interface KqiMpcService {
 
 	List<Map> getFaultDomain(KqiMpcQuery kqiMpcQuery);
+	/**
+	 * 查询第一失败接口
+	 * @param kqiMPcQuery
+	 * @return
+	 */
+	List<KqiQueryVo> getFailedInterface(KqiMpcQuery kqiMPcQuery);
 
 }

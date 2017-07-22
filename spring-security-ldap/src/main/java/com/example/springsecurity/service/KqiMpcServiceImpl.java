@@ -54,4 +54,21 @@ public class KqiMpcServiceImpl implements KqiMpcService {
 
 		return null;
 	}
+	/**
+	 * 查询失败接口
+	 * @param kqiMpcQuery
+	 * @return
+	 */
+	private List<Map> getFailedInterface(KqiMpcQuery kqiMpcQuery ){
+		String sql = getSql(kqiMpcQuery);
+		sql = addQueryFields(kqiMpcQuery);
+		sql = addWhereClause(kqiMPcQuery);
+		Response response = impalaQueryService.query(sql);
+		List<Map> results = dealWithImpalaResults(response);
+		if (results == null || result.size() == 0) {
+			loggre.info("no data's found from impala");
+		}
+	}
+
+
 }

@@ -1,5 +1,6 @@
 package com.ericsson.volteapp.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -38,6 +39,35 @@ public class VolteKqiMpcController {
 		response.setStatus(ConsistentVariable.SUCCESS_STATUS);
 		response.setResponseObject(result);
 		return response;
+	}
+	/**
+	 * 获取kqi的统计结果集 --- add 20170222 lida
+	 * @param: kqiStatisticsQuery
+	 * @return: response
+	 */
+	@ResponseBody
+	@RequestMapping("/getKqiStatistics.action")
+	public String getKqiStatistics(KqiStatisticsQuery kqiStatisticsQuery){
+
+		validateParams(kqiStatisticsQuery);
+
+		HashMap<String,Object> resultMap = new HashMap<String,Object>(0);
+
+		List<Map> rows = kqiStatisticsService.getKqiStatisticsResults(kqiStatisticsQuery);
+
+		if (rows == null || rows.size() == 0) {
+			logger.info("no data from impala  ");
+			resultMap.put("success",false);
+			resultMap.put("rows",null);
+			resultMap.put("total", 0);
+		}else{
+			resultMap.put("success",true);
+			resultMap.put("rows",rows);
+			resultMap.put("total", 15);
+		}
+
+		String resultJson = JsonUtil.convertToJson(resultMap);
+		return resultJson;
 	}
 
 }
