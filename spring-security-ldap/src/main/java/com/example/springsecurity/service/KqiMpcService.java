@@ -15,4 +15,5 @@ public interface KqiMpcService {
 	 */
 	List<KqiQueryVo> getFailedInterface(KqiMpcQuery kqiMPcQuery);
 
+	public Map<String,Object> getSessionList(Map<String,String> paramMap) ;
 }

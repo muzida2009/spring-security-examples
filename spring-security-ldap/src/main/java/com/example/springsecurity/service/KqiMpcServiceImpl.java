@@ -69,6 +69,27 @@ public class KqiMpcServiceImpl implements KqiMpcService {
 			loggre.info("no data's found from impala");
 		}
 	}
-
+	@Override
+	public Map<String, Object> getSignaling(Parameters parameters) {
+		Map<String,Object> rsMap = new HashMap<>();
+		//GD CMCC doesn't offer ne params, so we can't get ne info from mysql, we should get ne list from [ne type + xdr's sourc/target (ne ip)]
+		//get ne info from mysql
+		/*Map<String, Object> neInfoMap = getNeInfo();
+		if(neInfoMap.isEmpty()){
+			return rsMap;
+		}
+		rsMap.put(SignalingMapping.NELIST, neInfoMap.get(SignalingMapping.FOR_DISPLAY));*/
+		//get ne type for interface/procedure from csv.
+		Map<String, String> neTypeInfo = getNeTypeInfo();
+		//get interface info from csv.
+		Map<String, List<InterfaceEntity>> interfaceInfo = getInterfaceInfo();
+		if(interfaceInfo.isEmpty()){
+			return rsMap;
+		}
+		//get signaling info from impala.
+		List<InterfaceEntity> itfList = interfaceInfo.get(SignalingMapping.sessionTypes[Integer.valueOf(parameters.getType())-1]);
+		rsMap = getSignalingInfo(parameters,itfList,neTypeInfo);
+		return rsMap;
+	}
 
 }

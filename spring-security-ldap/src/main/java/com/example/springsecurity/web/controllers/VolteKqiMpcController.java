@@ -69,5 +69,41 @@ public class VolteKqiMpcController {
 		String resultJson = JsonUtil.convertToJson(resultMap);
 		return resultJson;
 	}
+	/**
+	 * 获取用户异常汇总（注册会话数、呼叫会话数、SRVCC切换会话）
+	 * @param input
+	 * @param choice
+	 * @param date
+	 * @param limit
+	 * @param page
+	 * @param start
+	 * @return
+	 */
+	@RequestMapping(value = "/getRegAndCallCount", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
+	@ResponseBody
+	public Response getRegAndCallCount(@RequestParam("input") String input, @RequestParam("choice") String choice,
+			@RequestParam("date") String date, @RequestParam("sessionType") String sessionType) {
+		Response response = new Response();
+		input = input.trim();
+		Map<String, String> dateMap = getFormatStartEndtime(date);
+		if (dateMap == null) {
+			response.setStatus(ConsistentVariable.FAILED_STATUS);
+			response.setMessage(ErrorMsg.CH_ERR_MSG_WRONG_TIME_FORMAT);
+			response.setResponseString("");
+			return response;
+		}
+		Map<String, Object> result = voLTEService.getRegAndCallCount(input, choice, dateMap.get("from"),
+				dateMap.get("to"), sessionType);
+		if (result == null) {
+			response.setStatus(ConsistentVariable.FAILED_STATUS);
+			response.setMessage(ErrorMsg.CH_ERR_MSG_EXCEPTION_SUMMARY_NOT_FOUND);
+			response.setResponseString("");
+			return response;
+		}
+		response.setStatus(ConsistentVariable.SUCCESS_STATUS);
+		response.setMessage("New data");
+		response.setResponseObject(result);
+		return response;
+	}
 
 }
